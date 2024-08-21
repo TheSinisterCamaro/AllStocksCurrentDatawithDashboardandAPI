@@ -1,0 +1,60 @@
+# Python Automation Code for Run1
+
+import yfinance as yf
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+
+def create_directory(base_path, stock_name):
+    # Create a new directory for the stock
+    directory_path = os.path.join(base_path, f"{stock_name}_results")
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+    return directory_path
+
+def collect_and_clean_data(ticker, start_date, end_date):
+    # Download historical data for the given ticker
+    data = yf.download(ticker, start=start_date, end=end_date)
+    
+    # Check for missing values and apply interpolation
+    if data.isnull().values.any():
+        print("Missing values detected. Applying linear interpolation...")
+        data.interpolate(method='linear', inplace=True)  # Apply linear interpolation to fill missing values
+    
+    return data
+
+def explore_data(data, output_dir, stock_name):
+    # Generate basic statistics
+    stats = data.describe()
+    
+    # Save statistics to a text file
+    stats_file_path = os.path.join(output_dir, f"{stock_name}_statistics.txt")
+    with open(stats_file_path, "w") as f:
+        f.write(stats.to_string())
+    print(f"Descriptive statistics saved to {stats_file_path}")
+
+    # Plot the closing prices and save the plot
+    plt.figure(figsize=(10, 6))
+    data['Close'].plot(title=f'{stock_name} Stock Closing Prices')
+    plt.xlabel('Date')
+    plt.ylabel('Close Price (USD)')
+    plot_file_path = os.path.join(output_dir, f"{stock_name}_closing_prices.png")
+    plt.savefig(plot_file_path)
+    print(f"Closing prices plot saved to {plot_file_path}")
+    plt.close()
+
+    # Save the cleaned data to a CSV file
+    data_file_path = os.path.join(output_dir, f"{stock_name}_data.csv")
+    data.to_csv(data_file_path)
+    print(f"Cleaned data saved to {data_file_path}")
+
+# Parameters
+ticker = "UBS"
+start_date = "2020-01-01"
+end_date = "2023-01-01"
+base_output_dir = r"C:\File\Path\Here.csv" # Add your file path to store the results.
+
+# Automate the full process
+output_dir = create_directory(base_output_dir, ticker)
+ubs_data = collect_and_clean_data(ticker, start_date, end_date)
+explore_data(ubs_data, output_dir, ticker)

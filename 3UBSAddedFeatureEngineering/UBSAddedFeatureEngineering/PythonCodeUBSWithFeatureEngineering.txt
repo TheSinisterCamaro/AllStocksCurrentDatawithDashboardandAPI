@@ -1,0 +1,99 @@
+import yfinance as yf
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+
+def create_directory(base_path, stock_name):
+    # Create a new directory for the stock
+    directory_path = os.path.join(base_path, f"{stock_name}_results")
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+    return directory_path
+
+def collect_and_clean_data(ticker, start_date, end_date):
+    # Download historical data for the given ticker
+    data = yf.download(ticker, start=start_date, end=end_date)
+    
+    # Check for missing values and apply interpolation
+    if data.isnull().values.any():
+        print("Missing values detected. Applying linear interpolation...")
+        data.interpolate(method='linear', inplace=True)  # Apply linear interpolation to fill missing values
+    
+    return data
+
+def engineer_features(data):
+    # Calculate Moving Averages
+    data['MA_20'] = data['Close'].rolling(window=20).mean()  # 20-day moving average
+    data['MA_50'] = data['Close'].rolling(window=50).mean()  # 50-day moving average
+
+    # Calculate Daily Returns
+    data['Daily_Return'] = data['Close'].pct_change()
+
+    # Calculate Volatility (Standard Deviation over 20 days)
+    data['Volatility'] = data['Close'].rolling(window=20).std()
+
+    # Calculate RSI (Relative Strength Index)
+    delta = data['Close'].diff(1)
+    gain = delta.where(delta > 0, 0)
+    loss = -delta.where(delta < 0, 0)
+    avg_gain = gain.rolling(window=14).mean()
+    avg_loss = loss.rolling(window=14).mean()
+    rs = avg_gain / avg_loss
+    data['RSI'] = 100 - (100 / (1 + rs))
+
+    return data
+
+def explore_data(data, output_dir, stock_name):
+    # Generate basic statistics
+    stats = data.describe()
+    
+    # Save statistics to a text file
+    stats_file_path = os.path.join(output_dir, f"{stock_name}_statistics.txt")
+    with open(stats_file_path, "w") as f:
+        f.write(stats.to_string())
+    print(f"Descriptive statistics saved to {stats_file_path}")
+
+    # Plot the closing prices and moving averages
+    plt.figure(figsize=(10, 6))
+    plt.plot(data['Close'], label='Close Price')
+    plt.plot(data['MA_20'], label='20-Day Moving Average')
+    plt.plot(data['MA_50'], label='50-Day Moving Average')
+    plt.title(f'{stock_name} Stock Prices and Moving Averages')
+    plt.xlabel('Date')
+    plt.ylabel('Price (USD)')
+    plt.legend()
+    plot_ma_path = os.path.join(output_dir, f"{stock_name}_moving_averages.png")
+    plt.savefig(plot_ma_path)
+    print(f"Moving averages plot saved to {plot_ma_path}")
+    plt.close()
+
+    # Plot RSI
+    plt.figure(figsize=(10, 6))
+    plt.plot(data['RSI'], label='RSI')
+    plt.axhline(30, linestyle='--', color='red')
+    plt.axhline(70, linestyle='--', color='red')
+    plt.title(f'{stock_name} Relative Strength Index (RSI)')
+    plt.xlabel('Date')
+    plt.ylabel('RSI')
+    plt.legend()
+    plot_rsi_path = os.path.join(output_dir, f"{stock_name}_RSI.png")
+    plt.savefig(plot_rsi_path)
+    print(f"RSI plot saved to {plot_rsi_path}")
+    plt.close()
+
+    # Save the engineered data to a CSV file
+    data_file_path = os.path.join(output_dir, f"{stock_name}_data_with_features.csv")
+    data.to_csv(data_file_path)
+    print(f"Data with features saved to {data_file_path}")
+
+# Parameters
+ticker = "UBS"
+start_date = "2020-01-01"
+end_date = "2023-01-01"
+base_output_dir = r"C:\File\Path\Here" # Insert file path to where the results will show here
+
+# Automate the full process
+output_dir = create_directory(base_output_dir, ticker)
+ubs_data = collect_and_clean_data(ticker, start_date, end_date)
+ubs_data_with_features = engineer_features(ubs_data)
+explore_data(ubs_data_with_features, output_dir, ticker)
