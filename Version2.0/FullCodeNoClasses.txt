@@ -62,7 +62,7 @@ def check_stop():
 def run_full_analysis_gui(ticker, progress_var, detail_var):
     try:
         date_time_suffix = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
-        base_output_dir = r"C:\Users\jdick\source\repos\AutomatedDataAnalyticsWithYahooAPIProject"
+        base_output_dir = r"C:\File\Path|Here" # Add file path to store results
         output_dir = create_directory(base_output_dir, ticker, date_time_suffix)
 
         # Update progress
