@@ -1,11 +1,25 @@
+import os
+import sys
+import tensorflow as tf
+import logging
+
+# Disable oneDNN custom operations
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+print("TF_ENABLE_ONEDNN_OPTS:", os.environ.get('TF_ENABLE_ONEDNN_OPTS'))
+
+# Suppress TensorFlow logs
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+tf.get_logger().setLevel(logging.ERROR)
+
+import warnings
+warnings.filterwarnings("ignore")
+
 import tkinter as tk
 from tkinter import ttk, messagebox
-from multiprocessing import Process, Value, Manager
 import yfinance as yf
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import os
 import datetime as dt
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
@@ -14,64 +28,99 @@ from datetime import timedelta
 from dash import dcc, html
 import dash
 import plotly.graph_objs as go
+import threading
+import time
+
+# Global variables to manage the analysis thread and stop flag
+analysis_thread = None
+stop_flag = threading.Event()
+
+# Function to update the "Running..." indicator
+def update_running_label(running_var):
+    while running_var.get() != "" and not stop_flag.is_set():
+        current_text = running_var.get()
+        if current_text == "Running...":
+            running_var.set("Running")
+        else:
+            running_var.set(current_text + ".")
+        root.update_idletasks()
+        time.sleep(0.5)  # Adjust the speed of the animation as needed
 
 # Function to update progress in the GUI
 def update_progress(progress_var, detail_var, progress_value, detail_text):
-    progress_var.set(progress_value)
-    detail_var.set(detail_text)
+    if not stop_flag.is_set():
+        progress_var.set(progress_value)
+        detail_var.set(detail_text)
+        root.update_idletasks()
+
+# Function to check if the process should be stopped
+def check_stop():
+    if stop_flag.is_set():
+        raise SystemExit("Analysis stopped by the user.")
 
 # Function to run the full analysis and update progress
-def run_full_analysis_gui(ticker, progress, detail_text):
-    date_time_suffix = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
-    base_output_dir = r"C:\Users\jdick\source\repos\AutomatedDataAnalyticsWithYahooAPIProject"
-    output_dir = create_directory(base_output_dir, ticker, date_time_suffix)
+def run_full_analysis_gui(ticker, progress_var, detail_var):
+    try:
+        date_time_suffix = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
+        base_output_dir = r"C:\Users\jdick\source\repos\AutomatedDataAnalyticsWithYahooAPIProject"
+        output_dir = create_directory(base_output_dir, ticker, date_time_suffix)
 
-    # Update progress
-    progress.value = 10
-    detail_text.value = "Collecting and cleaning data..."
-    ubs_data = collect_and_clean_data(ticker, "2010-01-01", interval='1d')
+        # Update progress
+        update_progress(progress_var, detail_var, 10, "Collecting and cleaning data...")
+        ubs_data = collect_and_clean_data(ticker, "2010-01-01", interval='1d')
+        check_stop()
 
-    # Prepare data for LSTM
-    progress.value = 30
-    detail_text.value = "Preparing data for LSTM..."
-    X_train, y_train, scaler = prepare_lstm_data_with_features(ubs_data)
+        # Prepare data for LSTM
+        update_progress(progress_var, detail_var, 30, "Preparing data for LSTM...")
+        X_train, y_train, scaler = prepare_lstm_data_with_features(ubs_data)
+        check_stop()
 
-    # Train model
-    progress.value = 50
-    detail_text.value = "Training LSTM model..."
-    lstm_model = train_lstm_model(X_train, y_train, output_dir, ticker)
+        # Train model
+        update_progress(progress_var, detail_var, 50, "Training LSTM model...")
+        lstm_model = train_lstm_model(X_train, y_train, output_dir, ticker)
+        check_stop()
 
-    # Plot and save graphs
-    progress.value = 70
-    detail_text.value = "Plotting and saving graphs..."
-    plot_and_save_graphs(ubs_data, output_dir, ticker)
+        # Plot and save graphs
+        update_progress(progress_var, detail_var, 70, "Plotting and saving graphs...")
+        plot_and_save_graphs(ubs_data, output_dir, ticker)
+        check_stop()
 
-    # Predict future prices
-    progress.value = 90
-    detail_text.value = "Predicting future prices..."
-    future_predictions = predict_future_prices_lstm(lstm_model, ubs_data, scaler, output_dir, ticker, future_days=365)
+        # Predict future prices
+        update_progress(progress_var, detail_var, 90, "Predicting future prices...")
+        future_predictions = predict_future_prices_lstm(lstm_model, ubs_data, scaler, output_dir, ticker, future_days=365)
+        check_stop()
 
-    # Finalize
-    progress.value = 100
-    detail_text.value = f"Analysis complete! View results at: {output_dir}\nVisit the dashboard at http://127.0.0.1:8050/"
-    start_dashboard(ubs_data, future_predictions, ticker)
+        # Finalize
+        update_progress(progress_var, detail_var, 100, f"Analysis complete! View results at: {output_dir}\nVisit the dashboard at http://127.0.0.1:8050/")
+        
+        # Start dashboard in a separate process to avoid blocking
+        start_dashboard(ubs_data, future_predictions, ticker)
+    except SystemExit as e:
+        print(f"Analysis stopped: {e}")
+        os._exit(0)  # Forcefully terminate the process
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        os._exit(1)  # Terminate the process due to an error
 
 # Function to handle running analysis from the GUI
-def run_analysis_gui(stock_ticker, progress_var, detail_var):
-    manager = Manager()
-    progress = Value('d', 0.0)
-    detail_text = manager.Value(str, "")
+def on_run_analysis(stock_ticker, progress_var, detail_var, running_var):
+    global analysis_thread, stop_flag
+    stop_flag.clear()  # Clear the stop flag at the start
+    running_var.set("Running...")
+    threading.Thread(target=update_running_label, args=(running_var,)).start()
 
-    def update_progress_in_gui():
-        while progress.value < 100:
-            update_progress(progress_var, detail_var, progress.value, detail_text.value)
-            root.update_idletasks()
-        update_progress(progress_var, detail_var, 100, detail_text.value)  # Ensure the progress bar fills up
+    # Run analysis in a separate thread
+    analysis_thread = threading.Thread(target=run_full_analysis_gui, args=(stock_ticker, progress_var, detail_var))
+    analysis_thread.start()
 
-    p = Process(target=run_full_analysis_gui, args=(stock_ticker, progress, detail_text))
-    p.start()
-
-    update_progress_in_gui()
+# Function to handle the End button click
+def on_end_program():
+    global analysis_thread, stop_flag
+    stop_flag.set()  # Signal the analysis thread to stop
+    if analysis_thread is not None and analysis_thread.is_alive():
+        analysis_thread.join(timeout=5)  # Wait for the thread to stop
+    root.destroy()  # Properly close the GUI
+    os._exit(0)  # Forcefully terminate the process
 
 # Function to create a directory with a date-time suffix
 def create_directory(base_path, stock_name, suffix):
@@ -82,6 +131,7 @@ def create_directory(base_path, stock_name, suffix):
 
 # Function to collect and clean data
 def collect_and_clean_data(ticker, start_date, interval='1d'):
+    check_stop()  # Check if stop flag is set
     end_date = dt.datetime.now()
     data = yf.download(ticker, start=start_date, end=end_date, interval=interval)
     if data.isnull().values.any():
@@ -91,6 +141,7 @@ def collect_and_clean_data(ticker, start_date, interval='1d'):
 
 # Function to prepare LSTM data
 def prepare_lstm_data_with_features(data, look_back=90):
+    check_stop()  # Check if stop flag is set
     data['MA_20'] = data['Close'].rolling(window=20).mean()
     data['MA_50'] = data['Close'].rolling(window=50).mean()
     data['RSI'] = data['Close'].rolling(window=14).apply(
@@ -107,16 +158,23 @@ def prepare_lstm_data_with_features(data, look_back=90):
     X, y = np.array(X), np.array(y)
     return X, y, scaler
 
-# Function to train the LSTM model
+# Function to train the LSTM model with optimizations
 def train_lstm_model(X_train, y_train, output_dir, stock_name):
+    check_stop()  # Check if stop flag is set
     model = Sequential()
-    model.add(LSTM(units=100, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
+
+    # Reduced LSTM units and layers for faster performance
+    model.add(LSTM(units=50, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
     model.add(Dropout(0.2))
-    model.add(LSTM(units=100))
+    model.add(LSTM(units=50))
     model.add(Dropout(0.2))
     model.add(Dense(1))
+
     model.compile(optimizer='adam', loss='mean_squared_error')
-    model.fit(X_train, y_train, epochs=50, batch_size=32)
+
+    # Adjusted batch size and reduced epochs for faster training
+    model.fit(X_train, y_train, epochs=25, batch_size=64)
+    
     model_path = os.path.join(output_dir, f"{stock_name}_lstm_model.h5")
     model.save(model_path)
     print(f"LSTM model saved to {model_path}")
@@ -124,6 +182,7 @@ def train_lstm_model(X_train, y_train, output_dir, stock_name):
 
 # Function to plot and save graphs
 def plot_and_save_graphs(data, output_dir, stock_name):
+    check_stop()  # Check if stop flag is set
     plt.figure(figsize=(10, 6))
     plt.plot(data['Close'], label='Close Price')
     plt.plot(data['MA_20'], label='20-Day Moving Average')
@@ -157,11 +216,13 @@ def plot_and_save_graphs(data, output_dir, stock_name):
 
 # Function to predict future prices
 def predict_future_prices_lstm(model, data, scaler, output_dir, stock_name, look_back=90, future_days=365):
+    check_stop()  # Check if stop flag is set
     last_data = data[-look_back:].values
     scaled_last_data = scaler.transform(last_data)
     future_inputs = np.reshape(scaled_last_data, (1, look_back, scaled_last_data.shape[1]))
     predictions = []
     for _ in range(future_days):
+        check_stop()  # Check if stop flag is set within the loop
         pred = model.predict(future_inputs)
         predictions.append(pred[0, 0])
         future_inputs = np.roll(future_inputs, -1, axis=1)
@@ -213,10 +274,9 @@ def create_dashboard(data, predictions, stock_name):
     app.run_server(debug=False, use_reloader=False)
 
 def start_dashboard(data, predictions, stock_name):
-    p = Process(target=create_dashboard, args=(data, predictions, stock_name))
-    p.start()
+    threading.Thread(target=create_dashboard, args=(data, predictions, stock_name)).start()
 
-# GUI Setup
+# GUI Setup with "Running..." indicator and End Button
 def setup_gui():
     global root
     root = tk.Tk()
@@ -237,14 +297,23 @@ def setup_gui():
     detail_label = tk.Label(root, textvariable=detail_var, wraplength=400)
     detail_label.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
 
+    # Running Indicator
+    running_var = tk.StringVar()
+    running_label = tk.Label(root, textvariable=running_var)
+    running_label.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
+
     # Run Analysis Button
-    def on_run_analysis():
+    def on_button_click():
         stock_ticker = ticker_entry.get().strip().upper()
         if stock_ticker:
-            run_analysis_gui(stock_ticker, progress_var, detail_var)
+            on_run_analysis(stock_ticker, progress_var, detail_var, running_var)
 
-    run_button = tk.Button(root, text="Run Analysis", command=on_run_analysis)
-    run_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
+    run_button = tk.Button(root, text="Run Analysis", command=on_button_click)
+    run_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+
+    # End Button
+    end_button = tk.Button(root, text="End", command=on_end_program)
+    end_button.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
 
     # Start the GUI event loop
     root.mainloop()

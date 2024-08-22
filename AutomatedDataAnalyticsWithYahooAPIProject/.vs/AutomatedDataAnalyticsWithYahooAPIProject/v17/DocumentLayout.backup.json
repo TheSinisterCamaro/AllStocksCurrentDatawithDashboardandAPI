@@ -1,0 +1,122 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\gui.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|solutionrelative:gui.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\model_training.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|solutionrelative:model_training.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\data_processing.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|solutionrelative:data_processing.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\main.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|solutionrelative:main.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\dashboard.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|solutionrelative:dashboard.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\plotting.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{0782F36D-1299-4B77-8AC9-D964F771E95B}|AutomatedDataAnalyticsWithYahooAPIProject.pyproj|solutionrelative:plotting.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "dashboard.py",
+              "DocumentMoniker": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\dashboard.py",
+              "RelativeDocumentMoniker": "dashboard.py",
+              "ToolTip": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\dashboard.py",
+              "RelativeToolTip": "dashboard.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2024-08-22T19:19:53.107Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "gui.py",
+              "DocumentMoniker": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\gui.py",
+              "RelativeDocumentMoniker": "gui.py",
+              "ToolTip": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\gui.py",
+              "RelativeToolTip": "gui.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2024-08-22T16:45:10.188Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "plotting.py",
+              "DocumentMoniker": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\plotting.py",
+              "RelativeDocumentMoniker": "plotting.py",
+              "ToolTip": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\plotting.py",
+              "RelativeToolTip": "plotting.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2024-08-22T16:45:05.072Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "model_training.py",
+              "DocumentMoniker": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\model_training.py",
+              "RelativeDocumentMoniker": "model_training.py",
+              "ToolTip": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\model_training.py",
+              "RelativeToolTip": "model_training.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2024-08-22T16:44:58.844Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "data_processing.py",
+              "DocumentMoniker": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\data_processing.py",
+              "RelativeDocumentMoniker": "data_processing.py",
+              "ToolTip": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\data_processing.py",
+              "RelativeToolTip": "data_processing.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2024-08-22T16:44:50.758Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "main.py",
+              "DocumentMoniker": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\main.py",
+              "RelativeDocumentMoniker": "main.py",
+              "ToolTip": "C:\\Users\\jdick\\source\\repos\\AutomatedDataAnalyticsWithYahooAPIProject\\AutomatedDataAnalyticsWithYahooAPIProject\\main.py",
+              "RelativeToolTip": "main.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2024-08-22T14:20:19.497Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -4,13 +4,15 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>0782f36d-1299-4b77-8ac9-d964f771e95b</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>AutomatedDataAnalyticsWithYahooAPIProject.py</StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>AutomatedDataAnalyticsWithYahooAPIProject</Name>
     <RootNamespace>AutomatedDataAnalyticsWithYahooAPIProject</RootNamespace>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +23,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AutomatedDataAnalyticsWithYahooAPIProject.py" />
+    <Compile Include="main.py" />
+    <Compile Include="dashboard.py" />
+    <Compile Include="data_processing.py" />
+    <Compile Include="model_training.py" />
+    <Compile Include="plotting.py" />
+    <Compile Include="gui.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
