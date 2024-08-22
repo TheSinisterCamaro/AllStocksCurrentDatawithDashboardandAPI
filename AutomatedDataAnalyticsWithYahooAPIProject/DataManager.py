@@ -1,20 +1,28 @@
+import yfinance as yf
 import pandas as pd
 import numpy as np
-import yfinance as yf
+import datetime as dt
 from sklearn.preprocessing import MinMaxScaler
 
-class DataProcessing:
-    def __init__(self, ticker, start_date):
-        self.ticker = ticker
-        self.start_date = start_date
+class DataManager:
+    def __init__(self, stop_flag):
+        self.stop_flag = stop_flag
 
-    def collect_and_clean_data(self):
-        end_date = pd.Timestamp.now()
-        data = yf.download(self.ticker, start=self.start_date, end=end_date, interval='1d')
-        data.interpolate(method='linear', inplace=True)
+    def check_stop(self):
+        if self.stop_flag.is_set():
+            raise SystemExit("Analysis stopped by the user.")
+
+    def collect_and_clean_data(self, ticker, start_date, interval='1d'):
+        self.check_stop()
+        end_date = dt.datetime.now()
+        data = yf.download(ticker, start=start_date, end=end_date, interval=interval)
+        if data.isnull().values.any():
+            print("Missing values detected. Applying linear interpolation...")
+            data.interpolate(method='linear', inplace=True)
         return data
 
     def prepare_lstm_data_with_features(self, data, look_back=90):
+        self.check_stop()
         data['MA_20'] = data['Close'].rolling(window=20).mean()
         data['MA_50'] = data['Close'].rolling(window=50).mean()
         data['RSI'] = data['Close'].rolling(window=14).apply(
