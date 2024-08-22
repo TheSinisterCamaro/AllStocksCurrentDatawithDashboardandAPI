@@ -115,5 +115,6 @@ Version 2.0 Enhancements
 - Running... Animation: A "Running..." animation was added to indicate that the analysis is ongoing and has not stalled.
 - Clear Completion Text: Upon completion, users are given clear instructions on where to find the results and how to view them.
 - Performance Improvements: I optimized the code to improve performance, reducing the tool's RAM and CPU usage and making the analysis faster and more efficient.
+- Clear Code Structure: Seperated code into classes rather than one big piece of code.
 
 This README provides a detailed overview of the tool's functionality, the issues encountered during development, and the solutions implemented. The project is a robust, automated tool for stock analysis, designed to be both powerful and user-friendly. Further improvements are planned to enhance performance and usability.
